@@ -21,6 +21,6 @@ public class Task1 {
                     .forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+       }
     }
 }

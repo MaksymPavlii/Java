@@ -53,7 +53,7 @@ public class Main {
                     stop();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+            }
         }
     }
 
