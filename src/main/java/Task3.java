@@ -17,7 +17,7 @@ public class Task3{
         server = new ServerSocket(port);
         server.setReuseAddress(true);
 
-        while (true) {
+        while (true){
             if (server.isBound()) new Thread(() -> {
                 try {
                     Socket client = server.accept();
