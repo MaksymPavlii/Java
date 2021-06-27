@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static final BlockingQueue<String> targetFilePaths = new ArrayBlockingQueue<>(1, true);
+    private static final BlockingQueue<String> targetFilesPaths = new ArrayBlockingQueue<>(1, true);
     public static String mask;
     public static String path;
     public static int depth;
@@ -39,7 +39,7 @@ public class Main {
                             .filter(p -> p.getFileName().toString().contains(mask))
                             .forEach(p -> {
                                 try {
-                                    targetFilePaths.put(p.toString());
+                                    targetFilesPaths.put(p.toString());
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -49,7 +49,7 @@ public class Main {
                 }
 
                 try {
-                    targetFilePaths.put("done");
+                    targetFilesPaths.put("done");
                     stop();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -62,7 +62,7 @@ public class Main {
         public void run() {
             while (true) {
                 try {
-                    targetFile = targetFilePaths.take();
+                    targetFile = targetFilesPaths.take();
                     if (targetFile == "done")  stop();
                     System.out.println(targetFile);
                 } catch (InterruptedException e) {
