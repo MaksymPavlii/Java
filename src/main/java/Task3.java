@@ -12,11 +12,16 @@ public class Task3 {
     public static ServerSocket server;
 
     public static void main(String[] args) throws IOException {
+        if(args[0].length() != 4)
+            throw new IllegalArgumentException("port should be positive number");
         port = Integer.parseInt(args[0]);
         if (Arrays.stream(args).count() > 2)
             for (int i = 2; i < args.length; i++)
                 args[1] = args[1].concat(" " + args[i]);
         rootPath = args[1];
+        if(rootPath.isEmpty() || !Path.of(rootPath).toString().contains(":"))
+            throw new IllegalArgumentException("Invalid Path");
+
         server = new ServerSocket(port);
         server.setReuseAddress(true);
 
@@ -34,6 +39,8 @@ public class Task3 {
                     writer.write("Input depth: ");
                     writer.flush();
                     client.depth = Integer.parseInt(reader.readLine());
+                    if(client.depth < 0)
+                        throw new IllegalArgumentException("depth should be positive number");
 
                     writer.write("Input mask: ");
                     writer.flush();
