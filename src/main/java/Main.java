@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public class Main{
+public class Main {
 
     private static final BlockingQueue<String> targetFilesPaths = new ArrayBlockingQueue<>(1, true);
     public static String mask;

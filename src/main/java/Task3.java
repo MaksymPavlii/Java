@@ -3,50 +3,52 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
-public class Task3{
+
+public class Task3 {
     public static int port;
     public static String rootPath;
-    public static int depth;
-    public static String mask;
     public static ServerSocket server;
 
     public static void main(String[] args) throws IOException {
         port = Integer.parseInt(args[0]);
+        if (Arrays.stream(args).count() > 2)
+            for (int i = 2; i < args.length; i++)
+                args[1] = args[1].concat(" " + args[i]);
         rootPath = args[1];
         server = new ServerSocket(port);
         server.setReuseAddress(true);
 
-        while (true){
-            if (server.isBound()) new Thread(() -> {
+        while (true) {
+            if (server.isBound())
+                new Thread(() -> {
                 try {
-                    Socket client = server.accept();
+                    Socket clientSocket = server.accept();
+                    Client client = new Client();
                     System.out.println("New client connected");
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
                     writer.write("Input depth: ");
                     writer.flush();
-                    depth = Integer.parseInt(reader.readLine());
+                    client.depth = Integer.parseInt(reader.readLine());
 
                     writer.write("Input mask: ");
                     writer.flush();
-                    mask = reader.readLine();
-
-                    System.out.println("InputClosed");
+                    client.mask = reader.readLine();
 
                     try {
                         Files.walk(Path.of(rootPath))
-                                .filter(p -> depth == p.getNameCount() - Path.of(rootPath).getNameCount())
-                                .filter(p -> p.getFileName().toString().contains(mask))
+                                .filter(p -> client.depth == p.getNameCount() - Path.of(rootPath).getNameCount())
+                                .filter(p -> p.getFileName().toString().contains(client.mask))
                                 .forEach(p -> {
                                     try {
                                         writer.write(p.toString());
                                         writer.newLine();
                                         writer.flush();
-                                        Thread.sleep(200);
-                                    } catch (IOException | InterruptedException e) {
+                                    } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 });
@@ -54,6 +56,7 @@ public class Task3{
                         e.printStackTrace();
                     }
                     reader.close();
+                    writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
