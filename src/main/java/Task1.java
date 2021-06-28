@@ -1,26 +1,31 @@
 import java.io.IOException;
+import java.nio.file.*;
 import java.util.*;
-import java.nio.file.Path;
-import java.nio.file.Files;
 
 public class Task1 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Scanner in = new Scanner(System.in);
         System.out.print("Enter mask: ");
         String mask = in.nextLine();
         System.out.print("Enter rootPath: ");
         String path = in.nextLine();
+        while (!Files.exists(Path.of(path))) {
+            System.out.print("Invalid path: ");
+            path = in.nextLine();
+        }
+        String finalPath = path;
         System.out.print("Enter depth: ");
-        int depth = in.nextInt();
+        int depth;
+        while ((depth = in.nextInt()) < 0){
+            System.out.print("depth should be positive: ");
+        }
+        int finalDepth = depth;
+        in.close();
 
-        try {
-            Files.walk(Path.of(path))
-                    .filter(p -> depth == p.getNameCount() - Path.of(path).getNameCount())
-                    .filter(p -> p.getFileName().toString().contains(mask))
-                    .forEach(System.out::println);
-        } catch (IOException e) {
-            e.printStackTrace();
-       }
+        Files.walk(Path.of(path))
+                .filter(p -> finalDepth == (p.getNameCount() - Path.of(finalPath).getNameCount()))
+                .filter(p -> p.getFileName().toString().contains(mask))
+                .forEach(System.out::println);
     }
 }

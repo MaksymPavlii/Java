@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public class Main {
+public class Task2 {
 
     private static final BlockingQueue<String> targetFilesPaths = new ArrayBlockingQueue<>(1, true);
     public static String mask;
@@ -20,13 +20,18 @@ public class Main {
         mask = in.nextLine();
         System.out.print("Enter rootPath: ");
         path = in.nextLine();
+        while (!Files.exists(Path.of(path))) {
+            System.out.print("Invalid path: ");
+            path = in.nextLine();
+        }
         System.out.print("Enter depth: ");
-        depth = in.nextInt();
+        while ((depth = in.nextInt()) < 0){
+            System.out.print("depth should be positive: ");
+        }
         in.close();
 
         new SearchingThread().start();
-        new ShowingThread().start();
-
+        new PrintingThread().start();
     }
 
     public static class SearchingThread extends Thread {
@@ -34,9 +39,9 @@ public class Main {
         public void run() {
                 try {
                     Stream<Path> filesTraverse = Files.walk(Path.of(path));
-
-                    filesTraverse.filter(p -> depth == p.getNameCount() - Path.of(path).getNameCount())
+                    filesTraverse
                             .filter(p -> p.getFileName().toString().contains(mask))
+                            .filter(p -> depth == (p.getNameCount() - Path.of(path).getNameCount()))
                             .forEach(p -> {
                                 try {
                                     targetFilesPaths.put(p.toString());
@@ -57,13 +62,13 @@ public class Main {
         }
     }
 
-    public static class ShowingThread extends Thread {
+    public static class PrintingThread extends Thread {
         @Override
         public void run() {
             while (true) {
                 try {
                     targetFile = targetFilesPaths.take();
-                    if (targetFile == "done")  stop();
+                    if (targetFile == "done")  interrupt();
                     System.out.println(targetFile);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
