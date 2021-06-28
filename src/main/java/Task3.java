@@ -69,7 +69,7 @@ public class Task3 {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }).start();
+            }).start();
         }
     }
 

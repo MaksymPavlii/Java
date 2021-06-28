@@ -55,7 +55,7 @@ public class Task2 {
 
                 try {
                     targetFilesPaths.put("done");
-                    stop();
+                    interrupt();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
             }
@@ -68,7 +68,7 @@ public class Task2 {
             while (true) {
                 try {
                     targetFile = targetFilesPaths.take();
-                    if (targetFile == "done")  interrupt();
+                    if (targetFile.equals("done"))  stop();
                     System.out.println(targetFile);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
