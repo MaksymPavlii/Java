@@ -13,7 +13,7 @@ public class Task3 {
 
     public static void main(String[] args) throws IOException {
         if (Integer.parseInt(args[0]) < 0)
-            throw new IllegalArgumentException("port should be positive number");
+            throw new IllegalArgumentException("Port should be positive number");
         port = Integer.parseInt(args[0]);
         if (Arrays.stream(args).count() > 2)
             for (int i = 2; i < args.length; i++)
@@ -35,12 +35,12 @@ public class Task3 {
                         System.out.println("New client connected");
 
                         BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()), 2);
 
                         writer.write("Input depth: ");
                         writer.flush();
                         while ((client.depth = Integer.parseInt(reader.readLine())) < 0) {
-                            writer.write("depth should be positive: ");
+                            writer.write("Depth should be positive: ");
                             writer.flush();
                         }
 
@@ -69,11 +69,12 @@ public class Task3 {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-            }).start();
+                }
+                ).start();
         }
     }
 
-    public static class Client{
+    public static class Client {
         public int depth;
         public String mask;
     }

@@ -12,9 +12,9 @@ public class Task2 {
     public static String mask;
     public static String path;
     public static int depth;
-    public static String targetFile;
+    public static String targetFilePath;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter mask: ");
         mask = in.nextLine();
@@ -25,8 +25,8 @@ public class Task2 {
             path = in.nextLine();
         }
         System.out.print("Enter depth: ");
-        while ((depth = in.nextInt()) < 0){
-            System.out.print("depth should be positive: ");
+        while ((depth = in.nextInt()) < 0) {
+            System.out.print("Depth should be positive: ");
         }
         in.close();
 
@@ -37,27 +37,27 @@ public class Task2 {
     public static class SearchingThread extends Thread {
         @Override
         public void run() {
-                try {
-                    Stream<Path> filesTraverse = Files.walk(Path.of(path));
-                    filesTraverse
-                            .filter(p -> p.getFileName().toString().contains(mask))
-                            .filter(p -> depth == (p.getNameCount() - Path.of(path).getNameCount()))
-                            .forEach(p -> {
-                                try {
-                                    targetFilesPaths.put(p.toString());
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Stream<Path> filesTraverse = Files.walk(Path.of(path));
+                filesTraverse
+                        .filter(p -> p.getFileName().toString().contains(mask))
+                        .filter(p -> depth == (p.getNameCount() - Path.of(path).getNameCount()))
+                        .forEach(p -> {
+                            try {
+                                targetFilesPaths.put(p.toString());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                try {
-                    targetFilesPaths.put("done");
-                    interrupt();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                targetFilesPaths.put("done");
+                interrupt();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -67,11 +67,12 @@ public class Task2 {
         public void run() {
             while (true) {
                 try {
-                    targetFile = targetFilesPaths.take();
-                    if (targetFile.equals("done"))  stop();
-                    System.out.println(targetFile);
+                    targetFilePath = targetFilesPaths.take();
+                    if (targetFilePath.equals("done")) {
+                        interrupt();
+                    } else System.out.println(targetFilePath);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         }

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Task1 {
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter mask: ");
         String mask = in.nextLine();
@@ -16,16 +16,16 @@ public class Task1 {
         }
         String finalPath = path;
         System.out.print("Enter depth: ");
-        int depth;
-        while ((depth = in.nextInt()) < 0){
+        int depth = 0;
+        while ((depth = in.nextInt()) < 0) {
             System.out.print("depth should be positive: ");
         }
         int finalDepth = depth;
         in.close();
 
         Files.walk(Path.of(path))
-                .filter(p -> finalDepth == (p.getNameCount() - Path.of(finalPath).getNameCount()))
                 .filter(p -> p.getFileName().toString().contains(mask))
+                .filter(p -> finalDepth == (p.getNameCount() - Path.of(finalPath).getNameCount()))
                 .forEach(System.out::println);
     }
 }
